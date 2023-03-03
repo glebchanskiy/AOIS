@@ -10,13 +10,10 @@ class Float:
     index = []
     mantissa = []
 
-    def to_string(self):
-        return f"{self.sign}|{self.index + self.mantissa}"
-
 
 def to_string(binary: List[int] | Float) -> str:
     if type(binary) == Float:
-        return f"{binary.sign}|{binary.index + binary.mantissa}"
+        return f"{binary.sign}|{binary.index}|{binary.mantissa}"
     elif type(binary) == list:
         return ''.join(str(bit) for bit in binary)
     else:
@@ -199,23 +196,19 @@ def less(first: List[int], second: List[int]) -> bool:
             return False
         elif first[i] == 0 and second[i] == 1:
             return True
-        elif first[i] == second[i]:
-            continue
-        else:
-            return True
+    return True
 
-
-def stabilisation(a: Float, b: Float):
-    temp_index = a.index.copy()
+def stabilisation(a: Float, b: Float, old_index):
+   
     binary_one = [0]*FLOAT_INDEX_DIGITS
     binary_one[len(binary_one)-1] = 1
-    
     while a.index != b.index:
-        a.index = addition(a.index, binary_one)
+        a.index = addition(a.index.copy(), binary_one.copy())
         
+
     d_mantissa = direct_to_decimal(a.mantissa.copy())
-    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy()) - direct_to_decimal(temp_index)))
-    a.mantissa = to_direct(d_mantissa, 23)
+    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy())  - direct_to_decimal(old_index) ))
+    a.mantissa = to_direct(d_mantissa, FLOAT_MANTISSA_DIGITS)
     return a
 
 
@@ -233,12 +226,12 @@ def float_addition(a: Float, b: Float) -> Float:
         b.mantissa[0] = 1
 
     if less(a.index, b.index):
-        a = stabilisation(a, b)
+        a = stabilisation(a, b, a.index.copy())
     else:
-        b = stabilisation(b, a)
+        b = stabilisation(b, a, b.index.copy())
 
-    binary_float.index = addition(a.index, b.index)
-    binary_float.mantissa = addition(a.mantissa, b.mantissa)
+    binary_float.index = addition(a.index, b.index)  
+    binary_float.mantissa = addition(a.mantissa.copy(), b.mantissa.copy())
 
     return binary_float
 

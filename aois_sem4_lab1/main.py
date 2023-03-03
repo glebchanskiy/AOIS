@@ -16,7 +16,7 @@ def main():
     print_task1(x1,x2)
     print_task2(x1,x2)
     print_task3(x1,x2)
-    print_task4(11.1, 21.101)
+    print_task4(1.25, 10.5)
 
     
 
