@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "aois-sem4-lab1"
+version = "0.1.0"
+description = ""
+authors = ["Levkov Gleb <Glebchanskiy@yandex.by>"]
+readme = "README.md"
+packages = [{include = "aois_sem4_lab1"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tabulate = "^0.9.0"
+poetry = "^1.4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+lab = "aois_sem4_lab1.main:main"
