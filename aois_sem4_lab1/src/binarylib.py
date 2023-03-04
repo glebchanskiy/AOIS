@@ -7,8 +7,11 @@ FLOAT_MANTISSA_DIGITS = 23
 
 class Float:
     sign = 0
-    index = []
-    mantissa = []
+    index = []     # stores dot offset
+    mantissa = []  # number without dot
+
+    # 1.23   -> 0 00000010 00000000000000001111011  (in mantissa stored 123)
+    # 1.2232 -> 0 00000100 00000000011001110110000  (in mantissa stored 12232)
 
 
 def to_string(binary: List[int] | Float) -> str:
@@ -90,7 +93,45 @@ def from_direct_to_additional(binary: List[int]) -> List[int]:
         binary = addition(binary, binary_one)
         return binary
 
-        # -------
+
+def to_float(number: float) -> Float:
+    binary_float = Float()
+    number_as_string = str(number)
+
+    if number < 0:
+        binary_float.sign = 1
+        number = -number
+
+    index = 0
+    for i in range(len(number_as_string)-1, -1, -1):
+        if number_as_string[i] == '.':
+            break
+        else:
+            index += 1
+
+    number *= pow(10, index)
+    number = int(number)
+    binary_float.index = to_direct(index, FLOAT_INDEX_DIGITS)
+    binary_float.mantissa = to_direct(number, FLOAT_MANTISSA_DIGITS)
+
+    return binary_float
+
+
+def direct_to_decimal(binary: List[int]):
+    number = 0
+    binary.reverse()
+    for i in range(0, len(binary)-1):
+        if binary[i] == 1:
+            number += pow(2, i)
+
+    if binary[len(binary) - 1] == 1:
+        return -number
+    else:
+        return number
+
+
+def float_to_decimal(binary: Float):
+    return direct_to_decimal(binary.mantissa) * pow(10, -direct_to_decimal(binary.index))
 
 
 def addition(a: List[int], b: List[int]) -> List[int]:
@@ -167,29 +208,6 @@ def division(a, b):
     return from_direct_to_additional(binary_result)
 
 
-def to_float(number: float) -> Float:
-    binary_float = Float()
-    number_as_string = str(number)
-
-    if number < 0:
-        binary_float.sign = 1
-        number = -number
-
-    index = 0
-    for i in range(len(number_as_string)-1, -1, -1):
-        if number_as_string[i] == '.':
-            break
-        else:
-            index += 1
-
-    number *= pow(10, index)
-    number = int(number)
-    binary_float.index = to_direct(index, FLOAT_INDEX_DIGITS)
-    binary_float.mantissa = to_direct(number, FLOAT_MANTISSA_DIGITS)
-
-    return binary_float
-
-
 def less(first: List[int], second: List[int]) -> bool:
     for i in range(0, len(first)-1):
         if first[i] == 1 and second[i] == 0:
@@ -198,27 +216,24 @@ def less(first: List[int], second: List[int]) -> bool:
             return True
     return True
 
+
 def stabilisation(a: Float, b: Float, old_index):
-   
+
     binary_one = [0]*FLOAT_INDEX_DIGITS
     binary_one[len(binary_one)-1] = 1
     while a.index != b.index:
         a.index = addition(a.index.copy(), binary_one.copy())
-        
 
     d_mantissa = direct_to_decimal(a.mantissa.copy())
-    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy())  - direct_to_decimal(old_index.copy())))
+    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy()) -
+                      direct_to_decimal(old_index.copy())))
     a.mantissa = to_direct(d_mantissa, FLOAT_MANTISSA_DIGITS)
-    # print('s:', direct_to_decimal(a.index.copy()), direct_to_decimal(old_index.copy())) 
+    # print('s:', direct_to_decimal(a.index.copy()), direct_to_decimal(old_index.copy()))
     return a
 
 
 def float_addition(a: Float, b: Float) -> Float:
     binary_float = Float()
-
-    print('fa_a:', a.index, a.mantissa) 
-    print('fa_b:', b.index, b.mantissa) 
-
 
     if a.sign == 1 and b.sign == 1:
         binary_float.sign = 1
@@ -234,24 +249,7 @@ def float_addition(a: Float, b: Float) -> Float:
     else:
         b = stabilisation(b, a, b.index.copy())
 
-    binary_float.index = a.index #addition(a.index, b.index)  
+    binary_float.index = a.index  # addition(a.index, b.index)
     binary_float.mantissa = addition(a.mantissa.copy(), b.mantissa.copy())
 
     return binary_float
-
-
-def float_to_decimal(binary: Float):
-    return direct_to_decimal(binary.mantissa) * pow(10, -direct_to_decimal(binary.index))
-
-
-def direct_to_decimal(binary: List[int]):
-    number = 0
-    binary.reverse()
-    for i in range(0, len(binary)-1):
-        if binary[i] == 1:
-            number += pow(2, i)
-
-    if binary[len(binary) - 1] == 1:
-        return -number
-    else:
-        return number

@@ -104,16 +104,6 @@ def print_div_of(a: int, b: int) -> None:
     ], tablefmt='simple_grid'))
 
 def print_float_sum_of(a: float, b: float):
-    # bin_a = to_float(a)
-    # bin_b = to_float(b)
-    # bin_float = 
-
-    # print(to_string(to_float(a)))
-    # print(to_string(to_float(b)))
-    # print(to_string(float_addition(bin_a, bin_b)))
-    # print(a, "+", b, "=", float_to_decimal(float_addition(bin_a, bin_b)))
-
-
     print(tabulate([
         ('a: ', a),
         ('b: ', b),

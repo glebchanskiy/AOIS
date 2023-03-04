@@ -8,7 +8,7 @@ def main():
     try:
         x1 = int(sys.argv[1])
         x2 = int(sys.argv[2])
-    except (IndexError, ValueError) as err:
+    except (IndexError, ValueError):
         x1 = 11
         x2 = 21
 
@@ -16,7 +16,7 @@ def main():
     print_task1(x1,x2)
     print_task2(x1,x2)
     print_task3(x1,x2)
-    print_task4(1.25, 10.5)
+    print_task4(1.1, 0.2232)
 
     
 
