@@ -207,15 +207,19 @@ def stabilisation(a: Float, b: Float, old_index):
         
 
     d_mantissa = direct_to_decimal(a.mantissa.copy())
-    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy())  - direct_to_decimal(old_index) ))
+    d_mantissa *= pow(10, (direct_to_decimal(a.index.copy())  - direct_to_decimal(old_index.copy())))
     a.mantissa = to_direct(d_mantissa, FLOAT_MANTISSA_DIGITS)
+    # print('s:', direct_to_decimal(a.index.copy()), direct_to_decimal(old_index.copy())) 
     return a
 
 
 def float_addition(a: Float, b: Float) -> Float:
     binary_float = Float()
 
-    # только положительные флоты
+    print('fa_a:', a.index, a.mantissa) 
+    print('fa_b:', b.index, b.mantissa) 
+
+
     if a.sign == 1 and b.sign == 1:
         binary_float.sign = 1
         a.mantissa[0] = 1
@@ -230,14 +234,14 @@ def float_addition(a: Float, b: Float) -> Float:
     else:
         b = stabilisation(b, a, b.index.copy())
 
-    binary_float.index = addition(a.index, b.index)  
+    binary_float.index = a.index #addition(a.index, b.index)  
     binary_float.mantissa = addition(a.mantissa.copy(), b.mantissa.copy())
 
     return binary_float
 
 
 def float_to_decimal(binary: Float):
-    return direct_to_decimal(binary.mantissa) * pow(10, -direct_to_decimal(binary.index) // 2)
+    return direct_to_decimal(binary.mantissa) * pow(10, -direct_to_decimal(binary.index))
 
 
 def direct_to_decimal(binary: List[int]):
