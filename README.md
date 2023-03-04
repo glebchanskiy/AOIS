@@ -1,4 +1,4 @@
-# Pygame - Space Invaders - LR3
+# BinaryConverter - LR1
 
 ## Install
 
@@ -11,7 +11,7 @@ git clone https://github.com/glebchanskiy/AOIS
 Install python deps:
 
 ```sh
-cd lab2
+cd lab
 poetry install
 ```
 
@@ -20,7 +20,7 @@ poetry install
 Run lab:
 
 ```sh
-cd lab2
+cd lab
 poetry run lab
 ```
 
